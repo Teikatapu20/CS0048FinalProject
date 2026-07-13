@@ -1,9 +1,9 @@
 import os
 import json
+from copy import deepcopy
 
 FILE_NAME = "inventory.json"
 
-# Default inventory
 DEFAULT_INVENTORY = {
     "1": {"display": "Table Saw", "status": "Available", "quantity": 5, "price_per_day": 300},
     "2": {"display": "Power Drill", "status": "Available", "quantity": 4, "price_per_day": 200},
@@ -26,16 +26,22 @@ def load_inventory():
         with open(FILE_NAME, "r") as file:
             return json.load(file)
     else:
-        save_inventory(DEFAULT_INVENTORY)
-        return DEFAULT_INVENTORY.copy()
+        save_inventory(deepcopy(DEFAULT_INVENTORY))
+        return deepcopy(DEFAULT_INVENTORY)
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 def pause():
-    input("\nPress Enter to continue...")
+    input("\nPress Enter to Return to Main Menu...")
+    
+def pauseRent():
+    input("\nPress Enter to Return to Edit List...")
 
-def show_inventory(inventory_data, title):
+def update_status(item):
+    item["status"] = "Available" if item["quantity"] > 0 else "Not Available"
+
+def show_inventory(inventory_data, title="CURRENT INVENTORY"):
     print(f" --- {title} ---")
     print(f"{'ID':<5}{'Tool':<20}{'Qty':<8}{'Price/Day':<12}{'Status'}")
     print("-" * 70)
@@ -51,11 +57,182 @@ def show_inventory(inventory_data, title):
 
     print("-" * 70)
 
+def show_order_list(orders):
+    print("=" * 50)
+    print("      ORDER LIST")
+    print("=" * 50)
+    
+    if not orders:
+        print("No items in the order list.")
+        print("-" * 70)
+        return
+
+    print(f"{'#':<5}{'Tool':<20}{'Qty':<8}{'Days':<8}{'Total'}")
+    print("-" * 70)
+
+    for i, order in enumerate(orders, start=1):
+        print(
+            f"{i:<5}"
+            f"{order['display']:<20}"
+            f"{order['quantity']:<8}"
+            f"{order['days']:<8}"
+            f"₱{order['total']}"
+        )
+
+    print("-" * 70)
+
+def renumber_orders(orders):
+    for i, order in enumerate(orders, start=1):
+        order["order_no"] = i
+
+def add_item_to_order(inventory, orders):
+    #clear_screen()
+    show_inventory(inventory, "ADD ITEM TO ORDER")
+
+    selected_id = input("Enter the ID you want to rent: ").strip()
+
+    if selected_id not in inventory:
+        print("\nTool ID not found in the inventory.")
+        pauseRent()
+        return
+
+    item = inventory[selected_id]
+
+    if item["quantity"] <= 0:
+        print(f"\nSorry, '{item['display']}' is out of stock.")
+        pauseRent()
+        return
+
+    try:
+        rent_qty = int(input("Enter quantity: "))
+        rental_days = int(input("Enter number of days: "))
+    except ValueError:
+        print("\nInvalid input. Please enter numbers only.")
+        pauseRent()
+        return
+
+    if rent_qty <= 0 or rental_days <= 0:
+        print("\nQuantity and number of days must be greater than zero.")
+        pauseRent()
+        return
+
+    if rent_qty > item["quantity"]:
+        print(
+            f"\nSorry, only {item['quantity']} item(s) of "
+            f"'{item['display']}' are available."
+        )
+        pauseRent()
+        return
+
+    total = rent_qty * rental_days * item["price_per_day"]
+
+    item["quantity"] -= rent_qty
+    update_status(item)
+    save_inventory(inventory)
+
+    orders.append({
+        "order_no": len(orders) + 1,
+        "tool_id": selected_id,
+        "display": item["display"],
+        "quantity": rent_qty,
+        "days": rental_days,
+        "price_per_day": item["price_per_day"],
+        "total": total
+    })
+
+    print("\nItem added successfully!")
+    print(f"Tool: {item['display']}")
+    print(f"Quantity: {rent_qty}")
+    print(f"Days: {rental_days}")
+    print(f"Total: ₱{total}")
+    pauseRent()
+    
+    #create a while to to prompt user if he wants to make another order
+
+def delete_item_from_order(inventory, orders):
+    if not orders:
+        print("\nYour order list is empty.")
+        pauseRent()
+        return
+
+    #clear_screen()
+    show_order_list(orders)
+
+    try:
+        order_no = int(input("Enter the order ID to delete: "))
+    except ValueError:
+        print("\nInvalid input. Please enter a number only.")
+        pauseRent()
+        return
+
+    if order_no < 1 or order_no > len(orders):
+        print("\nOrder number not found.")
+        pauseRent()
+        return
+
+    order = orders.pop(order_no - 1)
+    tool_id = order["tool_id"]
+
+    if tool_id in inventory:
+        inventory[tool_id]["quantity"] += order["quantity"]
+        update_status(inventory[tool_id])
+        save_inventory(inventory)
+
+    renumber_orders(orders)
+
+    print(f"\nDeleted '{order['display']}' from your order list.")
+    #pause()
+    print("Press Enter to retrun to Order list...")
+
+def order_list_menu(inventory, orders):
+    while True:
+        #clear_screen()
+        show_order_list(orders)
+
+        print("1. Delete a specific item from order list")
+        print("2. Return to order list menu")
+        choice = input("Select an option: ").strip()
+
+        if choice == "1":
+            delete_item_from_order(inventory, orders)
+        elif choice == "2":
+            break
+        else:
+            print("\nInvalid choice.")
+            pauseRent()
+
+def rent_menu(inventory):
+    orders = []
+
+    while True:
+        #clear_screen()
+        print(" --- RENT AN ITEM ---")
+        show_inventory(inventory, "AVAILABLE TOOLS")
+
+        print("1. Add item to order")
+        print("2. View order list")
+        print("3. Exit to main menu")
+        choice = input("Select an option: ").strip()
+
+        if choice == "1":
+            add_item_to_order(inventory, orders)
+
+        elif choice == "2":
+            order_list_menu(inventory, orders)
+
+        elif choice == "3":
+            break
+
+        else:
+            print("\nInvalid choice.")
+            pause()
+            
+
 def show_dashboard():
     inventory = load_inventory()
 
     while True:
-        clear_screen()
+        #clear_screen()
         print("=" * 50)
         print("      CARPENTRY POWER TOOL RENTAL SYSTEM")
         print("=" * 50)
@@ -70,102 +247,26 @@ def show_dashboard():
         choice = input("Select an option (1-4): ").strip()
 
         if choice == "1":
-            clear_screen()
+            #clear_screen()
+            print("\n")
+            #print("=" * 50)
             inventory = load_inventory()
-            show_inventory(inventory, "CURRENT INVENTORY")
+            show_inventory(inventory)
+            #print("=" * 50)
             pause()
 
         elif choice == "2":
-            clear_screen()
+            print("\n")
             inventory = load_inventory()
-
-            print(" --- RENT AN ITEM ---")
-            print("Available Tools:")
-            print("-" * 100)
-
-            for tool_id, details in inventory.items():
-                print(
-                    f"ID: {tool_id:<2} | {details['display']:<15} | "
-                    f"Qty: {details['quantity']:<3} | "
-                    f"₱{details['price_per_day']}/day | "
-                    f"Status: {details['status']}"
-                )
-
-            print("-" * 100)
-
-            selected_id = input("Enter the Tool ID you want to rent: ").strip()
-
-            if selected_id not in inventory:
-                print("\nTool ID not found in the inventory.")
-                pause()
-                continue
-
-            item_details = inventory[selected_id]
-
-            if item_details["quantity"] <= 0:
-                print(f"\nSorry, '{item_details['display']}' is out of stock.")
-                pause()
-                continue
-
-            try:
-                rent_qty = int(input("Enter quantity to rent: "))
-                rental_days = int(input("Enter number of rental days: "))
-            except ValueError:
-                print("\nInvalid input. Please enter numbers only.")
-                pause()
-                continue
-
-            if rent_qty <= 0 or rental_days <= 0:
-                print("\nQuantity and rental days must be greater than zero.")
-                pause()
-                continue
-
-            if rent_qty > item_details["quantity"]:
-                print(
-                    f"\nSorry, only {item_details['quantity']} item(s) of "
-                    f"'{item_details['display']}' are available."
-                )
-                pause()
-                continue
-
-            total = rent_qty * rental_days * item_details["price_per_day"]
-            item_details["quantity"] -= rent_qty
-
-            if item_details["quantity"] == 0:
-                item_details["status"] = "Not Available"
-            else:
-                item_details["status"] = "Available"
-
-            save_inventory(inventory)
-
-            clear_screen()
-            print("\nRental Successful!")
-            print(f"Tool: {item_details['display']}")
-            print(f"Quantity Rented: {rent_qty}")
-            print(f"Rental Days: {rental_days}")
-            print(f"Price per Day: ₱{item_details['price_per_day']}")
-            print(f"Total Amount: ₱{total}")
-            print(f"Remaining Quantity: {item_details['quantity']}")
-            print(f"Status: {item_details['status']}")
-            pause()
+            rent_menu(inventory)
 
         elif choice == "3":
-            clear_screen()
+            #clear_screen()
+            print("\n")
             inventory = load_inventory()
 
             print(" --- RETURN AN ITEM ---")
-            print("Current Tools:")
-            print("-" * 100)
-
-            for tool_id, details in inventory.items():
-                print(
-                    f"ID: {tool_id:<2} | {details['display']:<15} | "
-                    f"Qty: {details['quantity']:<3} | "
-                    f"₱{details['price_per_day']}/day | "
-                    f"Status: {details['status']}"
-                )
-
-            print("-" * 100)
+            show_inventory(inventory, "CURRENT INVENTORY")
 
             selected_id = input("Enter the Tool ID you want to return: ").strip()
 
@@ -173,8 +274,6 @@ def show_dashboard():
                 print("\nTool ID not found in the inventory.")
                 pause()
                 continue
-
-            item_details = inventory[selected_id]
 
             try:
                 return_qty = int(input("Enter quantity to return: "))
@@ -188,14 +287,12 @@ def show_dashboard():
                 pause()
                 continue
 
-            item_details["quantity"] += return_qty
-            item_details["status"] = "Available"
-
+            inventory[selected_id]["quantity"] += return_qty
+            update_status(inventory[selected_id])
             save_inventory(inventory)
 
-            print(f"\nSuccess! '{item_details['display']}' has been returned.")
-            print(f"Updated Quantity: {item_details['quantity']}")
-            print(f"Status: {item_details['status']}")
+            print(f"\nSuccess! '{inventory[selected_id]['display']}' has been returned.")
+            print(f"Updated Quantity: {inventory[selected_id]['quantity']}")
             pause()
 
         elif choice == "4":
@@ -207,4 +304,7 @@ def show_dashboard():
             pause()
 
 if __name__ == "__main__":
+    if not os.path.exists(FILE_NAME):
+        save_inventory(deepcopy(DEFAULT_INVENTORY))
+
     show_dashboard()
