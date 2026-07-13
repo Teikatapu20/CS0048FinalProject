@@ -2,17 +2,18 @@ import os
 
 # Inventory with standardized lowercase keys for easy matching, paired with display names and status
 inventory = {
-    "table saw": {"display": "Table Saw", "status": "Available"},
-    "power drill": {"display": "Power Drill", "status": "Available"},
-    "hand plane": {"display": "Hand Plane", "status": "Available"},
-    "wood chisel": {"display": "Wood Chisel", "status": "Available"},
-    "circular saw": {"display": "Circular Saw", "status": "Available"},
-    "jigsaw": {"display": "Jigsaw", "status": "Available"},
-    "router": {"display": "Router", "status": "Available"},
-    "sander": {"display": "Sander", "status": "Available"},
-    "clamps": {"display": "Clamps", "status": "Available"},
-    "measuring tape": {"display": "Measuring Tape", "status": "Available"},
+    "table saw": {"ID#": "1001","display": "Table Saw", "cost": "$29.99", "status": "Available"},
+    "power drill": {"ID#": "1002","display": "Power Drill", "cost": "$39.99", "status": "Available"},
+    "hand plane": {"ID#": "1003","display": "Hand Plane", "cost": "$19.99", "status": "Available"},
+    "wood chisel": {"ID#": "1004","display": "Wood Chisel", "cost": "$14.99", "status": "Available"},
+    "circular saw": {"ID#": "1005","display": "Circular Saw", "cost": "$49.99", "status": "Available"},
+    "jigsaw": {"ID#": "1006","display": "Jigsaw", "cost": "$34.99", "status": "Available"},
+    "router": {"ID#": "1007","display": "Router", "cost": "$24.99", "status": "Available"},
+    "sander": {"ID#": "1008","display": "Sander", "cost": "$19.99", "status": "Available"},
+    "clamps": {"ID#": "1009","display": "Clamps", "cost": "$9.99", "status": "Available"},
+    "measuring tape": {"ID#": "1010","display": "Measuring Tape", "cost": "$5.99", "status": "Available"},
 }
+
 
 
 def clear_screen():
@@ -37,10 +38,11 @@ def show_dashboard():
         if choice == "1":
             clear_screen()
             print(" --- CURRENT INVENTORY ---")
-            print("-" * 35)
+            print("-" * 70)
             for key, details in inventory.items():
-                print(f"• {details['display']:<15} -> {details['status']}")
-            print("-" * 35)
+               print(
+                    f"ID: {details['ID#']} | Item: {details['display']:<15} | Price: {details['cost']:<6} | Status: {details['status']}"
+            print("-" * 70)
             input("\nPress Enter to return to dashboard...")
 
         elif choice == "2":
