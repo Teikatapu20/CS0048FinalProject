@@ -35,15 +35,20 @@ def show_dashboard():
 
         choice = input("Select an option (1-4): ").strip()
 
-        if choice == "1":
+       if choice == "1":
             clear_screen()
             print(" --- CURRENT INVENTORY ---")
             print("-" * 70)
+            
             for key, details in inventory.items():
-               print(
-                    f"ID: {details['ID#']} | Item: {details['display']:<15} | Price: {details['cost']:<6} | Status: {details['status']}"
+             status_text = f"{details['Available status']} Available" if details['Available status'] > "0" else "Out of Stock"
+             
+             print(
+                    f"ID: {details['ID#']} | Item: {details['display']:<15} | Price: {details['cost']:<6} | Status: {status_text}"
+                )
             print("-" * 70)
             input("\nPress Enter to return to dashboard...")
+
 
         elif choice == "2":
             clear_screen()
