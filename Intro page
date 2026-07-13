@@ -1,0 +1,242 @@
+import json
+import os
+
+FILE_NAME = "carpentry_tools.json"
+
+
+def load_data():
+    if not os.path.exists(FILE_NAME):
+        return []
+    try:
+        with open(FILE_NAME, "r") as file:
+            data = json.load(file)
+            if isinstance(data, list):
+                return data
+            return []
+    except json.JSONDecodeError:
+        return []
+
+
+def save_data(items):
+    with open(FILE_NAME, "w") as file:
+        json.dump(items, file, indent=4)
+
+
+def find_item(items, item_id):
+    for item in items:
+        if item["id"] == item_id:
+            return item
+    return None
+
+
+def add_item():
+    items = load_data()
+
+    item_id = input("Enter tool ID: ").strip()
+    if find_item(items, item_id):
+        print("Tool ID already exists.")
+        return
+
+    name = input("Enter tool name: ").strip()
+    category = input("Enter tool category: ").strip()
+    condition = input("Enter tool condition (Good/Fair/Damaged): ").strip()
+
+    try:
+        quantity = int(input("Enter quantity: "))
+        price = float(input("Enter rent price per day: "))
+    except ValueError:
+        print("Invalid input for quantity or price.")
+        return
+
+    new_item = {
+        "id": item_id,
+        "name": name,
+        "category": category,
+        "condition": condition,
+        "quantity": quantity,
+        "price": price
+    }
+
+    items.append(new_item)
+    save_data(items)
+    print("Tool added successfully.")
+
+
+def edit_item():
+    items = load_data()
+    item_id = input("Enter tool ID to edit: ").strip()
+    item = find_item(items, item_id)
+
+    if not item:
+        print("Tool not found.")
+        return
+
+    print("Leave blank if you do not want to change a field.")
+
+    name = input(f"Enter new name ({item['name']}): ").strip()
+    category = input(f"Enter new category ({item['category']}): ").strip()
+    condition = input(f"Enter new condition ({item['condition']}): ").strip()
+    quantity = input(f"Enter new quantity ({item['quantity']}): ").strip()
+    price = input(f"Enter new rent price ({item['price']}): ").strip()
+
+    if name:
+        item["name"] = name
+    if category:
+        item["category"] = category
+    if condition:
+        item["condition"] = condition
+
+    if quantity:
+        try:
+            item["quantity"] = int(quantity)
+        except ValueError:
+            print("Invalid quantity. Change ignored.")
+
+    if price:
+        try:
+            item["price"] = float(price)
+        except ValueError:
+            print("Invalid price. Change ignored.")
+
+    save_data(items)
+    print("Tool updated successfully.")
+
+
+def delete_item():
+    items = load_data()
+    item_id = input("Enter tool ID to delete: ").strip()
+    item = find_item(items, item_id)
+
+    if not item:
+        print("Tool not found.")
+        return
+
+    items.remove(item)
+    save_data(items)
+    print("Tool deleted successfully.")
+
+
+def view_item():
+    items = load_data()
+    item_id = input("Enter tool ID to view: ").strip()
+    item = find_item(items, item_id)
+
+    if not item:
+        print("Tool not found.")
+        return
+
+    print("\nTool Details")
+    print(f"ID: {item['id']}")
+    print(f"Name: {item['name']}")
+    print(f"Category: {item['category']}")
+    print(f"Condition: {item['condition']}")
+    print(f"Quantity Available: {item['quantity']}")
+    print(f"Rent Price per Day: {item['price']}")
+
+
+def view_all_items():
+    items = load_data()
+
+    if not items:
+        print("No tools found.")
+        return
+
+    print("\nAll Carpentry Tools")
+    print("-" * 60)
+    for item in items:
+        print(f"ID: {item['id']}")
+        print(f"Name: {item['name']}")
+        print(f"Category: {item['category']}")
+        print(f"Condition: {item['condition']}")
+        print(f"Quantity Available: {item['quantity']}")
+        print(f"Rent Price per Day: {item['price']}")
+        print("-" * 60)
+
+
+def rent_item():
+    items = load_data()
+    item_id = input("Enter tool ID to rent: ").strip()
+    item = find_item(items, item_id)
+
+    if not item:
+        print("Tool not found.")
+        return
+
+    if item["quantity"] <= 0:
+        print("This tool is currently unavailable for rent.")
+        return
+
+    renter_name = input("Enter renter name: ").strip()
+    rental_days = input("Enter number of days: ").strip()
+
+    try:
+        rental_days = int(rental_days)
+        if rental_days <= 0:
+            print("Rental days must be greater than zero.")
+            return
+    except ValueError:
+        print("Invalid number of days.")
+        return
+
+    total_cost = item["price"] * rental_days
+    item["quantity"] -= 1
+    save_data(items)
+
+    print(f"\n{item['name']} has been rented by {renter_name}.")
+    print(f"Rental days: {rental_days}")
+    print(f"Total cost: {total_cost}")
+    print(f"Remaining quantity: {item['quantity']}")
+
+
+def return_item():
+    items = load_data()
+    item_id = input("Enter tool ID to return: ").strip()
+    item = find_item(items, item_id)
+
+    if not item:
+        print("Tool not found.")
+        return
+
+    item["quantity"] += 1
+    save_data(items)
+
+    print(f"{item['name']} has been returned successfully.")
+    print(f"Updated quantity: {item['quantity']}")
+
+
+def main_menu():
+    while True:
+        print("\n===== CARPENTRY RENTAL SYSTEM =====")
+        print("1. Add Tool")
+        print("2. Edit Tool")
+        print("3. Delete Tool")
+        print("4. View Tool")
+        print("5. View All Tools")
+        print("6. Rent Tool")
+        print("7. Return Tool")
+        print("8. Exit")
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            add_item()
+        elif choice == "2":
+            edit_item()
+        elif choice == "3":
+            delete_item()
+        elif choice == "4":
+            view_item()
+        elif choice == "5":
+            view_all_items()
+        elif choice == "6":
+            rent_item()
+        elif choice == "7":
+            return_item()
+        elif choice == "8":
+            print("Exiting program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+main_menu()
