@@ -1,210 +1,219 @@
 # CS0048FinalProject
 
-# 🎓 IskolarHub
+# 🛠️ Carpentry Power Tool Rental System
 
-IskolarHub is a web-based scholarship finder designed to help students easily discover scholarship opportunities through a centralized platform. Instead of searching across multiple websites and social media pages, students can browse, search, and filter scholarships based on their qualifications.
+The **Carpentry Power Tool Rental System** is a console-based application developed in **Python** that helps rental businesses efficiently manage their inventory of carpentry power tools. Instead of manually recording rentals, returns, and inventory updates, the system provides a centralized solution for managing rental transactions and tool availability.
 
-The platform also provides an admin dashboard that allows scholarship providers to create, update, and manage scholarship listings, making scholarship information more accessible to students.
+The application allows users to add, edit, delete, view, rent, and return power tools while automatically storing all records using **JSON file handling**. This ensures that inventory data is retained even after the program is closed.
 
 ---
 
 # 🎯 Purpose
 
-IskolarHub aims to simplify the scholarship search process by providing a centralized platform where students can easily browse scholarship opportunities while allowing scholarship providers to efficiently manage their scholarship listings.
+The **Carpentry Power Tool Rental System** aims to simplify the management of carpentry tool rentals by providing a reliable and user-friendly application that allows rental businesses to efficiently monitor tool inventory, process rental transactions, and maintain accurate records using file handling.
 
 ---
 
-### Scholarship Details
+## 🔨 Power Tool Details
 
-Each scholarship listing displays:
+Each tool record contains the following information:
 
-- Scholarship Description
-- Eligibility Requirements
-- Required Documents
-- Scholarship Benefits
-- Application Deadline
-- Scholarship Provider
-- Official Website Link
+- 🆔 Tool ID
+- 🔧 Tool Name
+- 📂 Tool Category
+- ✅ Tool Condition
+- 📦 Available Quantity
+- 💲 Rental Price per Day
 
 ---
 
 ## 🚀 Setup Instructions
 
-### Prerequisites
+### 📋 Prerequisites
 
-- XAMPP installed with Apache and MySQL
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
+- Python **3.10** or higher
+- Visual Studio Code, PyCharm, or IDLE
+- Basic knowledge of running Python programs
 
-### 1. Clone the Repository
+---
 
-Place the project in your XAMPP web root:
-```
-C:\xampp\htdocs\App\IskolarHub\
-```
+### 1️⃣ Clone or Download the Repository
 
-### 2. Database Setup
+Download the project or clone it using Git.
 
-See **[SETUP.md](SETUP.md)** for detailed database setup instructions.
-
-Quick steps:
-1. Open phpMyAdmin: `http://localhost/phpmyadmin`
-2. Create database `iskolarhub`
-3. Import `database/schema.sql`
-4. Import `database/seeds.sql`
-
-### 3. Start XAMPP
-
-Make sure **Apache** and **MySQL** are running in XAMPP Control Panel.
-
-### 4. Access the Application
-
-Open your browser and go to:
-```
-http://localhost/App/IskolarHub/test/index.html
+```bash
+git clone https://github.com/yourusername/carpentry-power-tool-rental-system.git
 ```
 
-### 5. Default Admin Login
+or download the ZIP file and extract it.
 
-After importing `seeds.sql`:
-- **Username:** `admin`
-- **Password:** `admin123`
+---
 
-## 📁 Folder Structure
+### 2️⃣ Open the Project
+
+Open the project folder using your preferred Python IDE.
+
+Example:
 
 ```
-IskolarHub/
-├── config/
-│   ├── database.php          # PDO database connection
-│   └── helpers.php           # Database setup validation helper
-├── controllers/
-│   ├── StudentController.php # Student API logic
-│   └── ScholarshipController.php # Scholarship API logic
-├── models/
-│   ├── Student.php           # Student data model
-│   ├── Scholarship.php       # Scholarship data model
-│   └── Admin.php             # Admin data model
-├── services/
-│   ├── ScholarshipService.php # Scholarship business logic
-│   └── RecommendationService.php # Recommendation engine
-├── api/
-│   ├── admin/
-│   │   └── login.php         # POST /api/admin/login.php
-│   ├── students/
-│   │   ├── register.php      # POST /api/students/register.php
-│   │   ├── login.php         # POST /api/students/login.php
-│   │   ├── save.php          # POST /api/students/save.php
-│   │   ├── show.php          # GET  /api/students/show.php?id=
-│   │   ├── update.php        # POST /api/students/update.php
-│   │   └── index.php         # GET  /api/students/index.php
-│   ├── scholarships/
-│   │   ├── create.php        # POST /api/scholarships/create.php
-│   │   ├── index.php         # GET  /api/scholarships/index.php
-│   │   ├── list.php          # GET  /api/scholarships/list.php
-│   │   ├── show.php          # GET  /api/scholarships/show.php?id=
-│   │   ├── update.php        # POST /api/scholarships/update.php
-│   │   └── delete.php        # POST /api/scholarships/delete.php
-│   └── recommendations/
-│       └── index.php         # GET  /api/recommendations/index.php?student_id=
-├── database/
-│   ├── schema.sql            # Database schema
-│   ├── seeds.sql             # Sample data
-│   ├── migrate.sql           # Migration script for updates
-│   └── check.php             # Database verification script
-├── test/
-│   ├── index.html            # Frontend testing UI
-│   ├── css/
-│   │   └── style.css         # Styles
-│   └── js/
-│       └── app.js            # Frontend JavaScript
-├── SETUP.md                  # Database setup guide
+Carpentry-Power-Tool-Rental-System/
+```
+
+---
+
+### 3️⃣ Run the Program
+
+Open the terminal inside the project folder and run:
+
+```bash
+python main.py
+```
+
+---
+
+### 4️⃣ Data Storage
+
+The program automatically creates and updates:
+
+```
+carpentry_tools.json
+```
+
+This file stores all inventory records and rental updates.
+
+---
+
+# 📁 Folder Structure
+
+```
+Carpentry-Power-Tool-Rental-System/
+│
+├── main.py                   # Main program
+├── carpentry_tools.json      # Tool inventory database
 └── README.md                 # Project documentation
 ```
 
-## 🔌 API Overview
-
-### Student APIs
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/students/register.php` | POST | Register a new student |
-| `/api/students/login.php` | POST | Student login |
-| `/api/students/save.php` | POST | Save full student profile |
-| `/api/students/show.php?id=` | GET | Get student by ID |
-| `/api/students/update.php` | POST | Update student profile |
-| `/api/students/index.php` | GET | List all students (admin) |
-
-### Admin APIs
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/admin/login.php` | POST | Admin login |
-
-### Scholarship APIs
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/scholarships/create.php` | POST | Create scholarship |
-| `/api/scholarships/index.php` | GET | List all scholarships |
-| `/api/scholarships/list.php` | GET | Search/filter scholarships |
-| `/api/scholarships/show.php?id=` | GET | Get scholarship by ID |
-| `/api/scholarships/update.php` | POST | Update scholarship |
-| `/api/scholarships/delete.php` | POST | Delete scholarship |
-
-### Recommendation API
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/recommendations/index.php?student_id=` | GET | Get eligible scholarships for student |
-
-## ✨ Features
-
-### Student
-- User registration and login
-- Complete eligibility/profile form
-- Browse available scholarships
-- Search and filter scholarships
-- View personalized scholarship recommendations
-- Privacy Notice and Terms of Use agreement
-
-### Administrator
-- Secure admin login
-- Dashboard overview with statistics
-- Add, edit, and delete scholarship listings
-- View registered students
-- View as Student (read-only mode)
-
-## 🔍 Search Filters
-
-Students can filter scholarships by:
-- Scholarship Type (dropdown)
-- Course/Program (dropdown)
-- Minimum GWA
-
-## 🛠️ Built With
-
-- Native PHP
-- MySQL
-- PDO
-- HTML
-- CSS
-- JavaScript
-
-## 🎯 Project Goal
-
-To provide a centralized platform that simplifies scholarship discovery for students while giving scholarship providers an efficient way to manage and publish scholarship opportunities.
-
-## 👥 Team
-
-**Group 1**
-
-- CASTRO, TROJAN KANE PERSEUS, V.
-- CRUZ, VINZ EMMANUEL, B.
-- ODDA, Kris Derick, C.
-- RADOC, JUSTINE GRACE, A.
-- TEIKATAPU, BAIABE, McANTHONY
-- TIONGSON, JUSTINE ZHARINA
-- 
 ---
 
-*Helping students discover more opportunities, one scholarship at a time.*
+# ⚙️ System Functions
+
+The application provides the following functions:
+
+| Function | Description |
+|----------|-------------|
+| ➕ Add Tool | Add a new power tool to the inventory |
+| ✏️ Edit Tool | Modify existing tool information |
+| ❌ Delete Tool | Remove a tool from the inventory |
+| 🔍 View Tool | Display details of a specific tool |
+| 📋 View All Tools | Display every available tool |
+| 🛒 Rent Tool | Rent an available power tool |
+| 🔄 Return Tool | Return a rented power tool |
+| 🚪 Exit | Close the application |
+
+---
+
+# ✨ Features
+
+### 👨‍🔧 Inventory Management
+
+- ➕ Add new carpentry power tools
+- ✏️ Edit existing tool records
+- ❌ Delete tool records
+- 📋 View complete inventory
+- 🔍 Search tools by Tool ID
+
+### 🛒 Rental Management
+
+- Rent available power tools
+- Return rented tools
+- Automatically update tool quantity
+- Calculate rental cost based on rental days
+
+### 💾 File Handling
+
+- Save records using JSON
+- Automatically load saved inventory
+- Preserve data after closing the application
+
+---
+
+# 📚 Python Concepts Applied
+
+This project demonstrates the application of the following Python topics:
+
+- 📝 Variables and Data Types
+- ⌨️ Input and Output
+- 🔀 Conditional Statements
+- 🔁 Loops
+- 🧩 Functions
+- 📋 Lists
+- 📖 Dictionaries
+- 💾 File Handling (JSON)
+- ⚠️ Exception Handling
+
+---
+
+# 🛠️ Built With
+
+- 🐍 Python 3
+- 📄 JSON File Handling
+- 💻 Visual Studio Code / PyCharm / IDLE
+
+---
+
+# 🎯 Project Goal
+
+To develop a simple yet effective **Carpentry Power Tool Rental System** that enables users to manage carpentry power tool inventory, perform rental and return transactions, and store records using file handling while applying the Python programming concepts learned in Modules 1–6.
+
+---
+
+# 📖 Sample Menu
+
+```
+===============================
+ CARPENTRY POWER TOOL RENTAL
+===============================
+
+1. Add Tool
+2. Edit Tool
+3. Delete Tool
+4. View Tool
+5. View All Tools
+6. Rent Tool
+7. Return Tool
+8. Exit
+
+Enter your choice:
+```
+
+---
+
+# 📈 Future Improvements
+
+Possible enhancements include:
+
+- 🔐 User login system
+- 👨‍💼 Administrator and Customer accounts
+- 📅 Rental due dates
+- 💵 Late return penalties
+- 🧾 Receipt generation
+- 📊 Rental reports
+- 🔍 Search and filtering
+- 🖥️ Graphical User Interface (Tkinter/PyQt)
+- 🗄️ MySQL or SQLite database integration
+
+---
+
+# 👥 Developers
+
+**Group Members**
+
+- TEIKATAPU, BAIABE MCANTHONY
+- MAMAOU, GLEN
+
+---
+
+# 📄 License
+
+This project was developed for **educational purposes** as a final Python programming project and may be modified or enhanced for academic use.
+
