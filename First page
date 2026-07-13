@@ -1,1 +1,98 @@
+import os
+
+# Inventory with standardized lowercase keys for easy matching, paired with display names and status
+inventory = {
+    "table saw": {"display": "Table Saw", "status": "Available"},
+    "power drill": {"display": "Power Drill", "status": "Available"},
+    "hand plane": {"display": "Hand Plane", "status": "Available"},
+    "wood chisel": {"display": "Wood Chisel", "status": "Available"},
+    "circular saw": {"display": "Circular Saw", "status": "Available"},
+    "jigsaw": {"display": "Jigsaw", "status": "Available"},
+    "router": {"display": "Router", "status": "Available"},
+    "sander": {"display": "Sander", "status": "Available"},
+    "clamps": {"display": "Clamps", "status": "Available"},
+    "measuring tape": {"display": "Measuring Tape", "status": "Available"},
+}
+
+
+def clear_screen():
+    """Clears the terminal screen for a clean look."""
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def show_dashboard():
+    while True:
+        clear_screen()
+        print("=" * 35)
+        print("  CARPENTRY RENTAL SYSTEM  ")
+        print("=" * 35)
+        print(" 1.  View Items")
+        print(" 2.  Rent Item")
+        print(" 3.  Return Item")
+        print(" 4.  Exit System")
+        print("=" * 35)
+
+        choice = input("Select an option (1-4): ").strip()
+
+        if choice == "1":
+            clear_screen()
+            print(" --- CURRENT INVENTORY ---")
+            print("-" * 35)
+            for key, details in inventory.items():
+                print(f"• {details['display']:<15} -> {details['status']}")
+            print("-" * 35)
+            input("\nPress Enter to return to dashboard...")
+
+        elif choice == "2":
+            clear_screen()
+            print(" --- RENT AN ITEM ---")
+            # Converts user input to lowercase automatically
+            user_input = input("Enter item name to rent: ").strip().lower()
+
+            if user_input in inventory:
+                item_details = inventory[user_input]
+                if item_details["status"] == "Available":
+                    item_details["status"] = "Rented"
+                    print(
+                        f"\nSuccess! '{item_details['display']}' has been checked out."
+                    )
+                else:
+                    print(
+                        f"\n Sorry, '{item_details['display']}' is already rented!"
+                    )
+            else:
+                print("\n Item not found in our catalog.")
+            input("\nPress Enter to return to dashboard...")
+
+        elif choice == "3":
+            clear_screen()
+            print(" --- RETURN AN ITEM ---")
+            # Converts user input to lowercase automatically
+            user_input = input("Enter item name to return: ").strip().lower()
+
+            if user_input in inventory:
+                item_details = inventory[user_input]
+                if item_details["status"] == "Rented":
+                    item_details["status"] = "Available"
+                    print(
+                        f"\nSuccess! '{item_details['display']}' is back in stock."
+                    )
+                else:
+                    print(
+                        f"\n '{item_details['display']}' was not checked out."
+                    )
+            else:
+                print("\n Item not found in our catalog.")
+            input("\nPress Enter to return to dashboard...")
+
+        elif choice == "4":
+            print("\nExiting system. Goodbye!")
+            break
+
+        else:
+            input("\nInvalid choice! Press Enter to try again...")
+
+
+if __name__ == "__main__":
+    show_dashboard()
 
