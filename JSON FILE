@@ -2,19 +2,19 @@
     "1": {
         "display": "Table Saw",
         "status": "Available",
-        "quantity": 5,
+        "quantity": 10,
         "price_per_day": 300
     },
     "2": {
         "display": "Power Drill",
         "status": "Available",
-        "quantity": 4,
+        "quantity": 10,
         "price_per_day": 200
     },
     "3": {
         "display": "Hand Plane",
         "status": "Available",
-        "quantity": 6,
+        "quantity": 10,
         "price_per_day": 150
     },
     "4": {
@@ -26,25 +26,25 @@
     "5": {
         "display": "Circular Saw",
         "status": "Available",
-        "quantity": 3,
+        "quantity": 10,
         "price_per_day": 350
     },
     "6": {
         "display": "Jigsaw",
         "status": "Available",
-        "quantity": 5,
+        "quantity": 10,
         "price_per_day": 300
     },
     "7": {
         "display": "Router",
         "status": "Available",
-        "quantity": 4,
+        "quantity": 10,
         "price_per_day": 200
     },
     "8": {
         "display": "Sander",
         "status": "Available",
-        "quantity": 6,
+        "quantity": 10,
         "price_per_day": 150
     },
     "9": {
@@ -56,7 +56,7 @@
     "10": {
         "display": "Hammer",
         "status": "Available",
-        "quantity": 3,
+        "quantity": 10,
         "price_per_day": 350
     }
 }
